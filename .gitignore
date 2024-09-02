@@ -1,0 +1,9 @@
+venv/
+
+**/.env
+
+# Object Detection
+object-detection/data/
+
+# Notification Service
+notification-service/node_modules/
