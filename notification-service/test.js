@@ -35,6 +35,49 @@ const runSelectQueries = async () => {
   `;
   const combinedData = await executeQuery(joinQuery);
   console.log('Combined Data:', combinedData);
+
+  // 4. Retrieve vehicle owners whose email is NULL
+  const selectVehicleOwnerWithNullEmailQuery = `
+    SELECT * FROM vehicle_owners
+    WHERE email_address IS NULL;
+  `;
+  const vehicleOwnerWithNullEmail = await executeQuery(selectVehicleOwnerWithNullEmailQuery);
+  console.log('Vehicle Owners with NULL Email Address:', vehicleOwnerWithNullEmail);
+
+  // 5. Retrieve vehicle owners whose phone number is NULL
+  const selectVehicleOwnerWithNullPhoneQuery = `
+    SELECT * FROM vehicle_owners
+    WHERE phone_number IS NULL;
+  `;
+  const vehicleOwnerWithNullPhone = await executeQuery(selectVehicleOwnerWithNullPhoneQuery);
+  console.log('Vehicle Owners with NULL Phone Number:', vehicleOwnerWithNullPhone);
+
+  // 6. Retrieve vehicle owners where phone number is '123-456-7890'
+  const selectVehicleOwnerByPhoneQuery = `
+    SELECT * FROM vehicle_owners
+    WHERE phone_number = $1;
+  `;
+  const vehicleOwnerByPhone = await executeQuery(selectVehicleOwnerByPhoneQuery, ['123-456-7890']);
+  console.log('Vehicle Owners with Phone Number 123-456-7890:', vehicleOwnerByPhone);
+
+  // 7. Retrieve vehicle owners where email is 'test@test.com'
+  const selectVehicleOwnerByEmailQuery = `
+    SELECT * FROM vehicle_owners
+    WHERE email_address = $1;
+  `;
+  const vehicleOwnerByEmail = await executeQuery(selectVehicleOwnerByEmailQuery, ['test@test.com']);
+  console.log('Vehicle Owners with Email test@test.com:', vehicleOwnerByEmail);
+
+  // 8. Retrieve first name, last name, email, and phone number from both tables where license_plate_number matches
+  const selectCombinedOwnerDataQuery = `
+    SELECT o.firstName, o.lastName, vo.email_address, vo.phone_number
+    FROM vehicle_owners vo
+    JOIN owners o ON vo.ownerId = o.ownerId
+    WHERE vo.license_plate_number = $1;
+  `;
+  const combinedOwnerData = await executeQuery(selectCombinedOwnerDataQuery, [licensePlate]);
+  console.log(`Owner Data for License Plate ${licensePlate}:`, combinedOwnerData);
+
 };
 
 
