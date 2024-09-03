@@ -1,9 +1,12 @@
 const pool = require('./db');
 const twilio = require('twilio');
+const sgMail = require('@sendgrid/mail');
 
 require('dotenv').config();
 
 const twilioClient = twilio(process.env.TWILIO_ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
+sgMail.setApiKey(process.env.SENDGRID_API_KEY);
+
 
 const getUserDetails = async (licensePlate, type) => {
   const client = await pool.connect();
@@ -33,6 +36,17 @@ const sendSms = (phoneNumber, message) => {
 };
 
 
+const sendEmail = (email, subject, message) => {
+  const msg = {
+    to: email,
+    from: process.env.SENDGRID_SENDER_EMAIL,
+    subject: subject,
+    text: message,
+  };
+  return sgMail.send(msg);
+};
+
+
 const processNotification = async (notification) => {
   const { licensePlateNumber, type } = notification;
   const userDetails = await getUserDetails(licensePlateNumber, type);
@@ -50,7 +64,7 @@ const processNotification = async (notification) => {
       await sendSms(phone_number, message);
       console.log(`SMS sent to ${phone_number}`);
     } else if (type === 'email' && email_address) {
-      // Need to implement
+      await sendEmail(email_address, 'Vehicle Notification', message);
       console.log(`Email sent to ${email_address}`);
     } else {
       console.log(`No valid contact method for ${licensePlateNumber}`);
