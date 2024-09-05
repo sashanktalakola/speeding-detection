@@ -1,0 +1,8 @@
+runtime: nodejs
+env: standard
+
+instance_class: F2
+
+env_variables:
+  KAFKA_BROKER: kafka-service
+  KAFKA_PORT: 9092

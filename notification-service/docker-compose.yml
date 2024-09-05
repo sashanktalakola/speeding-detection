@@ -28,14 +28,8 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: notification-service
-    environment:
-      KAFKA_BROKER: kafka
-      KAFKA_PORT: 9092
-      TWILIO_ACCOUNT_SID: ${TWILIO_ACCOUNT_SID}
-      TWILIO_AUTH_TOKEN: ${TWILIO_AUTH_TOKEN}
-      TWILIO_PHONE_NUMBER: ${TWILIO_PHONE_NUMBER}
-      SENDGRID_API_KEY: ${SENDGRID_API_KEY}
-      SENDGRID_SENDER_EMAIL: ${SENDGRID_SENDER_EMAIL}
+    env_file:
+      - .env
     ports:
       - "3000:3000"
     depends_on:
